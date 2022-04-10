@@ -1,0 +1,153 @@
+---
+title: "Final Project"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+
+```{r}
+getwd()
+Repcandidates <- read_csv("/Users/srijitadatta/Documents/FinalProject/data/schedule_a-2022-04-09T18_08_05.csv")
+Demcandidates <- read_csv("/Users/srijitadatta/Documents/FinalProject/data/schedule_a-2022-04-10T12_46_53DEM.csv")
+```
+
+Q1) Which Republican and Democrat candidate got the most contribution from MO?
+
+#REPUBLICAN
+
+```{r}
+Repcandidates %>%
+  filter(contributor_state == "MO") %>%
+  group_by(committee_name...2) %>%
+  summarise(total_cont=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total_cont))
+
+```
+
+```{r}
+
+Repcandidates %>%
+  filter(contributor_state != "MO") %>%
+  group_by(committee_name...2) %>%
+  summarise(total_cont=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total_cont))
+
+```
+
+
+#DEMOCRATIC
+
+```{r}
+Demcandidates %>%
+  filter(contributor_state == "MO") %>%
+  group_by(committee_name...2) %>%
+  summarise(total_cont=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total_cont))
+
+```
+
+```{r}
+Demcandidates %>%
+  filter(contributor_state != "MO") %>%
+  group_by(committee_name...2) %>%
+  summarise(total_cont=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total_cont))
+
+```
+
+
+Q2) Which candidate has got the greatest number of contributions?
+
+#REPUBLICAN
+
+```{r}
+Repcandidates %>%
+  count(committee_name...2) %>%
+  arrange(desc(n))
+
+```
+
+#DEMOCRATIC
+
+```{r}
+
+Demcandidates %>%
+  count(committee_name...2) %>%
+  arrange(desc(n))
+
+```
+
+Q3) Which republican and democratic candidate got the most contributions from Retired persons ?
+
+```{r}
+Repcandidates %>%
+  filter(contributor_employer == "RETIRED" & contributor_state == "MO" ) %>%
+  group_by(committee_name...2) %>%
+  summarise(total_cont=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total_cont))
+```
+#Democratic
+
+```{r}
+
+Demcandidates %>%
+  filter(contributor_employer == "RETIRED" & contributor_state == "MO") %>%
+  group_by(committee_name...2) %>%
+  summarise(total_cont=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total_cont))
+
+```
+
+Q4)Which ZIP Code contributed the most amount within MO? 
+
+#Republican
+
+```{r}
+Repcandidates %>%
+  filter(contributor_state == "MO") %>%
+  group_by(contributor_zip) %>%
+  summarise(total=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total))
+```
+63080
+
+#Democratic
+
+```{r}
+Demcandidates %>%
+  filter(contributor_state == "MO") %>%
+  group_by(contributor_zip) %>%
+  summarise(total=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total))
+
+```
+63028
+
+Q5) Which candidate received the most money from the ZIP code that contributed the most 
+money? How much?
+
+#Republican
+
+```{r}
+Repcandidates %>%
+  filter(contributor_state == "MO" & contributor_zip == "63080") %>%
+  group_by(committee_name...2) %>%
+  summarise(total=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total))
+
+```
+
+#Democratic
+
+```{r}
+Demcandidates %>%
+  filter(contributor_state == "MO" & contributor_zip == "63028") %>%
+  group_by(committee_name...2) %>%
+  summarise(total=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total))
+
+```
+
