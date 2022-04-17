@@ -151,3 +151,12 @@ Demcandidates %>%
 
 ```
 
+#---------------------------------------------------------------------------
+
+
+
+```{r}
+Cand_finance <- read_csv("/Users/srijitadatta/Documents/FinalProject/data/campaignfinancedata.csv")
+
+```
+
