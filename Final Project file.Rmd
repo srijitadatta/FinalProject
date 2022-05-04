@@ -160,3 +160,457 @@ Cand_finance <- read_csv("/Users/srijitadatta/Documents/FinalProject/data/campai
 
 ```
 
+How much money has been raised in total (nationwide) for election campaign?
+
+```{r}
+Cand_finance %>% 
+summarise(total=sum(TTL_RECEIPTS))
+```
+2.683 B
+
+How much money was raised by Democrat and Republican candidates? (nationwide)
+#REP
+```{r}
+Cand_finance %>% 
+  filter(CAND_PTY_AFFILIATION=="REP") %>% 
+  summarise(total=sum(TTL_RECEIPTS))
+```
+1.0424 B
+#DEM
+```{r}
+Cand_finance %>% 
+  filter(CAND_PTY_AFFILIATION=="DEM") %>% 
+  summarise(total=sum(TTL_RECEIPTS))
+```
+
+How much money has been raised by candidates running from Missouri?
+```{r}
+Cand_finance %>% 
+  filter(CAND_OFFICE_ST=="MO") %>% 
+  summarise(total=sum(TTL_RECEIPTS))
+```
+44.2 Million
+
+Howm much has been raised by Republican and Democrat candidates in Missouri?
+#REP
+```{r}
+Cand_finance %>% 
+  filter(CAND_OFFICE_ST=="MO" & CAND_PTY_AFFILIATION=="REP") %>% 
+  summarise(total=sum(TTL_RECEIPTS))
+```
+35.74 Million
+
+#DEM
+```{r}
+Cand_finance %>% 
+  filter(CAND_OFFICE_ST=="MO" & CAND_PTY_AFFILIATION=="DEM") %>% 
+  summarise(total=sum(TTL_RECEIPTS))
+```
+8.455 Million
+How much money has been raised by candidates in other states?
+```{r}
+Cand_finance %>% 
+group_by(CAND_OFFICE_ST) %>% 
+summarise(total=sum(TTL_RECEIPTS)) %>% 
+arrange(desc(total))
+```
+Total number of Democrats vs. Republicans running for election? (nationwide and state)
+#Nationwide
+```{r}
+Cand_finance %>% 
+  count(CAND_PTY_AFFILIATION) %>%
+arrange (desc(n))
+```
+#state
+```{r}
+Cand_finance %>% 
+  filter(CAND_OFFICE_ST=="MO") %>% 
+  count(CAND_PTY_AFFILIATION) %>% 
+  arrange(desc(n))
+
+```
+
+How much did party committees contribute to candidates in MO with respect to entire US?
+#entire US
+```{r}
+Cand_finance %>%
+summarise(total=sum(POL_PTY_CONTRIB))
+```
+1.161 Million
+#state
+```{r}
+Cand_finance %>%
+filter(CAND_OFFICE_ST=="MO") %>%
+summarise(total=sum(POL_PTY_CONTRIB))
+```
+How many candidates are there who do not have a state affiliation?
+```{r}
+Cand_finance %>% 
+  count(CAND_OFFICE_ST=="0")
+```
+What is the total debt owed by Republican and Democrat candidates in Missouri vs. entire U.S.?
+#Reps in MO
+```{r}
+Cand_finance %>%
+filter(CAND_OFFICE_ST =="MO" & CAND_PTY_AFFILIATION == "REP") %>%
+summarise( total = sum(DEBTS_OWED_BY))
+```
+#Reps in US
+```{r}
+Cand_finance %>%
+filter(CAND_PTY_AFFILIATION=="REP") %>%
+summarise(total=sum(DEBTS_OWED_BY))
+```
+#Dems in MO
+```{r}
+Cand_finance %>%
+filter(CAND_OFFICE_ST =="MO" & CAND_PTY_AFFILIATION == "DEM") %>%
+summarise(total = sum(DEBTS_OWED_BY))
+```
+0.358 Million
+#Dems in US
+```{r}
+Cand_finance %>%
+filter( CAND_PTY_AFFILIATION == "DEM") %>%
+summarise( total = sum( DEBTS_OWED_BY))
+```
+74.18 Million
+Which candidates raised the most money vs. who raised the least? (Both nationwide and state)
+#Dems in MO
+```{r}
+Cand_finance %>%
+filter(CAND_OFFICE_ST=="MO" & CAND_PTY_AFFILIATION=="DEM") %>%
+summarise(total=sum(TTL_RECEIPTS)) %>%
+arrange(desc(total))
+```
+8.455 Million
+#Dems in US
+```{r}
+Cand_finance %>%
+filter(CAND_PTY_AFFILIATION=="DEM") %>%
+summarise(total=sum(TTL_RECEIPTS)) %>%
+arrange(desc(total))
+```
+1.612 Billion
+
+#Reps in MO
+```{r}
+Cand_finance %>%
+filter(CAND_OFFICE_ST =="MO" & CAND_PTY_AFFILIATION == "REP") %>%
+summarise(total=sum(TTL_RECEIPTS) ) %>%
+arrange(desc(total))
+```
+35.74 Million
+
+#Reps in US
+```{r}
+Cand_finance %>%
+filter(CAND_PTY_AFFILIATION=="REP") %>%
+summarise( total=sum(TTL_RECEIPTS)) %>%
+arrange(desc(total))
+```
+1.042 billion
+
+```{r}
+Cand_finance %>%
+filter(CAND_PTY_AFFILIATION=="DEM" | CAND_PTY_AFFILIATION=="REP") %>%
+select(CAND_NAME,TTL_RECEIPTS,CAND_PTY_AFFILIATION ) %>%
+arrange(desc(TTL_RECEIPTS))
+```
+```{r}
+Cand_finance %>%
+filter(CAND_OFFICE_ST=="MO" & (CAND_PTY_AFFILIATION=="DEM" | CAND_PTY_AFFILIATION == "REP")) %>%
+select(CAND_NAME,TTL_RECEIPTS,CAND_PTY_AFFILIATION ) %>%
+arrange(desc(TTL_RECEIPTS))
+```
+
+How much did Josh Hawley get from MO? From outside MO? Which state contributed the most to Hawley apart from MO?
+```{r}
+Cand_finance %>%
+filter(CAND_OFFICE_ST == "MO" & CAND_NAME ==" Josh Hawley") %>%
+summarise( total = sum( TTL_RECEIPTS))
+```
+```{r}
+Cand_finance %>%
+filter(CAND_OFFICE_ST!="MO" & CAND_NAME =="Josh Hawley") %>%
+group_by(CAND_OFFICE_ST) %>%
+summarise(total=sum(TTL_RECEIPTS) %>%
+arrange(desc(total))
+```
+
+```{r}
+source_finance <- read_csv("/Users/srijitadatta/Documents/FinalProject/data/Sourcefinancedata.csv")
+```
+
+
+```{r}
+
+Cand_finance %>%
+  filter(grepl('HARTZLER',CAND_NAME))%>%
+  select(CAND_NAME, TTL_RECEIPTS)
+```
+
+```{r}
+source_finance %>%
+  filter(committee_name...2 == "VICKY HARTZLER FOR SENATE") %>%
+  summarise(total=sum(contribution_receipt_amount))
+
+```
+#Source_finance data is not updated since December, hence discrepancies
+
+#MAIN----------------------------------------------------------------------
+#Q) Total Individual contributions from MO and US
+#from MO
+```{r}
+Cand_finance %>%
+  filter(CAND_OFFICE_ST == "MO") %>%
+  summarise(total=sum(TTL_INDIV_CONTRIB))
+```
+#From US
+```{r}
+Cand_finance %>%
+  filter(CAND_OFFICE_ST !="MO")%>%
+  summarise(total=sum(TTL_INDIV_CONTRIB))
+```
+# Q) Total fund raised by democratic and republican
+
+#Funds Raised by democratic candidates in MO
+```{r}
+Cand_finance %>%
+  filter(CAND_OFFICE_ST == "MO" & CAND_PTY_AFFILIATION == "DEM") %>%
+  summarise(total=sum(TTL_RECEIPTS))
+```
+
+#Funds Raised by democrats in US
+
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "DEM") %>%
+  summarise(total=sum(TTL_RECEIPTS))
+
+```
+
+#Funds Raised by republicans in MO
+```{r}
+Cand_finance %>%
+  filter(CAND_OFFICE_ST == "MO" & CAND_PTY_AFFILIATION == "REP") %>%
+  summarise(total=sum(TTL_RECEIPTS))
+  
+
+```
+
+#Contribution Raised by Republican in US
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "REP") %>%
+  summarise(total=sum(TTL_RECEIPTS))
+  
+
+```
+# Q)Maximum funds by democrats and republican
+
+#Maximum funds by dem candidates in MO and their names
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "DEM" & CAND_OFFICE_ST =="MO") %>%
+  summarise(maxi=max(TTL_RECEIPTS),name=CAND_NAME)
+```
+
+#Maximum fund by dem candidates outside MO and their names
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "DEM" & CAND_OFFICE_ST !="MO") %>%
+  summarise(maxi=max(TTL_RECEIPTS),name=CAND_NAME)
+```
+#Maximum funds by rep candidates in MO and their names
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "REP" & CAND_OFFICE_ST =="MO") %>%
+  summarise(maxi=max(TTL_RECEIPTS),name=CAND_NAME)
+```
+#Maximum fund by rep candidates outside MO and their names
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "REP" & CAND_OFFICE_ST !="MO") %>%
+  summarise(maxi=max(TTL_RECEIPTS),name=CAND_NAME)
+```
+#Q) Minimum funds by dem and rep candidates in MO and is US
+
+#Minimum fund by dem candidates in MO and their names
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "DEM" & CAND_OFFICE_ST =="MO") %>%
+  summarise(mini=min(TTL_RECEIPTS),name=CAND_NAME)
+```
+
+#Minimum fund by dem candidates outside MO and their names
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "DEM" & CAND_OFFICE_ST !="MO" ) %>%
+  summarise(mini=min(TTL_RECEIPTS),name=CAND_NAME)
+```
+#Minimum fund by rep candidates in MO and their names
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "REP" & CAND_OFFICE_ST =="MO") %>%
+  summarise(mini=min(TTL_RECEIPTS),name=CAND_NAME)
+```
+#Minimum fund by rep candidates Outside MO and their names
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION == "REP" & CAND_OFFICE_ST !="MO") %>%
+  summarise(mini=min(TTL_RECEIPTS),name=CAND_NAME)
+```
+
+
+#Q) All candidates funds, expenditure and in-hand cash
+#REP in MO
+
+```{r}
+Cand_finance %>%
+  filter(CAND_OFFICE_ST =="MO" & CAND_PTY_AFFILIATION =="REP") %>%
+  group_by(CAND_NAME) %>%
+  select(TTL_RECEIPTS, TTL_DISB,CAND_OFFICE_ST,CAND_PTY_AFFILIATION)
+```
+#REP in entire US
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION =="REP") %>%
+  group_by(CAND_NAME) %>%
+  select(TTL_RECEIPTS, TTL_DISB,CAND_OFFICE_ST,CAND_PTY_AFFILIATION)
+  
+```
+
+#DEM in entire MO
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION =="DEM" & CAND_OFFICE_ST =="MO") %>%
+  group_by(CAND_NAME) %>%
+  select(TTL_RECEIPTS, TTL_DISB,CAND_OFFICE_ST,CAND_PTY_AFFILIATION)
+  
+```
+
+
+
+#DEM in entire US
+```{r}
+Cand_finance %>%
+  filter(CAND_PTY_AFFILIATION =="DEM") %>%
+  group_by(CAND_NAME) %>%
+  select(TTL_RECEIPTS, TTL_DISB,CAND_OFFICE_ST,CAND_PTY_AFFILIATION)
+```
+
+```{r}
+cand_finance_updt_REP <- Cand_finance %>%
+  filter(CAND_ID %in% c('S2MO00544','H0MO07113','S2MO00536','H0MO04086','S2MO00627','S2MO00585','S2MO00643','S8MO00160','S0MO00183'))
+
+```
+
+```{r}
+cand_finance_updt_DEM <- Cand_finance %>%
+  filter(CAND_ID %in% c('S2MO00650','S2MO00551','S2MO00528','S2MO00494','S2MO00692'))
+
+```
+
+
+```{r}
+cand_finance_updt_REP %>%
+  summarise(cand_name= CAND_NAME,funds=TTL_RECEIPTS,disbursement=TTL_DISB,state=CAND_OFFICE_ST,inhand_cash=(TTL_RECEIPTS-TTL_DISB), affiliation=CAND_PTY_AFFILIATION)
+  
+```
+
+```{r}
+cand_finance_updt_DEM %>%
+  summarise(cand_name= CAND_NAME,funds=TTL_RECEIPTS,disbursement=TTL_DISB,state=CAND_OFFICE_ST,inhand_cash=(TTL_RECEIPTS-TTL_DISB), affiliation=CAND_PTY_AFFILIATION)
+  
+```
+
+
+```{r}
+source_finance_updt_REP <- read_csv("/Users/srijitadatta/Documents/FinalProject/data/REP_SourceData.csv")
+```
+
+```{r}
+source_finance_updt_DEM<- read_csv("/Users/srijitadatta/Documents/FinalProject/data/DEM_SourceData.csv")
+```
+
+#Data on funding source details were last updated in dec
+
+#Republic Candidates
+
+#fundings from MO
+```{r}
+source_finance_updt_REP %>%
+  filter(contributor_state == "MO") %>%
+  group_by(committee_name...2)%>%
+  summarise(total=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total))
+
+```
+#fundings from outside MO
+```{r}
+source_finance_updt_REP %>%
+  filter(contributor_state != "MO") %>%
+  group_by(committee_name...2)%>%
+  summarise(total=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total))
+
+```
+
+#Democratic Candidates
+
+#fundings from MO
+```{r}
+source_finance_updt_DEM %>%
+  filter(contributor_state == "MO") %>%
+  group_by(committee_name...2)%>%
+  summarise(total=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total))
+
+```
+#fundings from outside MO
+```{r}
+source_finance_updt_DEM %>%
+  filter(contributor_state != "MO") %>%
+  group_by(committee_name...2)%>%
+  summarise(total=sum(contribution_receipt_amount)) %>%
+  arrange(desc(total))
+
+```
+
+```{r}
+election_data<- read_csv("/Users/srijitadatta/Documents/FinalProject/data/electionDATA.csv")
+```
+
+#Total number of Democratic and Republic Candidates
+
+```{r}
+election_data %>%
+  count(party_full) %>%
+  arrange(desc(n))
+
+```
+
+```{r}
+election_data %>%
+  count(incumbent_challenge_full) %>%
+  arrange(desc(n))
+```
+
+#Democratic
+
+```{r}
+election_data%>%
+  filter(party_full == "DEMOCRATIC PARTY") %>%
+  summarise(name= candidate_name, funds= total_receipts , disb = total_disbursements, inHandCash=total_receipts-total_disbursements)
+
+```
+
+#Republican
+
+```{r}
+election_data%>%
+  filter(party_full == "REPUBLICAN PARTY") %>%
+  summarise(name= candidate_name, funds= total_receipts , disb = total_disbursements, inHandCash=total_receipts-total_disbursements)
+
+```
